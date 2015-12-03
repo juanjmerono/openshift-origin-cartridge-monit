@@ -12,7 +12,7 @@ set eventqueue
   slots 100
 
 set mail-format { from: monit@${OPENSHIFT_APP_DNS} }
-set alert ${MONIT_ALERT_EMAIL}
+#set alert ${MONIT_ALERT_EMAIL}
 
 set httpd port ${OPENSHIFT_MONIT_WEB_PORT} and use address ${OPENSHIFT_MONIT_HTTP_IP}
   allow admin:${OPENSHIFT_MONIT_PASSWORD}
@@ -23,19 +23,19 @@ check program MEMORY_QUOTA with path "${OPENSHIFT_MONIT_DIR}bin/scripts/cgroups-
   start program = "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control start"
   stop program = "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control stop"
   if status > 80
-    then alert
+    then exec "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control slack memory80"
   if status > 90
     then restart
   if 5 restarts within 5 cycles
     then timeout
 
 check program STORAGE_QUOTA with path "${OPENSHIFT_MONIT_DIR}bin/scripts/quota-check.sh"
-  if status > 80 then alert
+  if status > 80 then exec "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control slack storage80"
   if status > 90
     then exec "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control tidy"
 
 check host ${OPENSHIFT_GEAR_DNS} with address ${OPENSHIFT_GEAR_DNS}
   start program = "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control start"
   stop program = "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control stop"
-  if failed port 80 protocol http for 2 cycles then restart
-  if 2 restarts within 4 cycles then timeout
+  if failed port 80 protocol http for 2 cycles then exec "${OPENSHIFT_MONIT_DIR}bin/scripts/oo-env.sh ${OPENSHIFT_PRIMARY_CARTRIDGE_DIR}bin/control slack loowiddown"
+  #if 2 restarts within 4 cycles then timeout

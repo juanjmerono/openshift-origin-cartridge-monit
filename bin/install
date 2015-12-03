@@ -23,18 +23,18 @@ mkdir -p ${OPENSHIFT_MONIT_DIR}/var/events
 openssl rand -base64 5 2>/dev/null >${OPENSHIFT_MONIT_DIR}env/OPENSHIFT_MONIT_PASSWORD
 export OPENSHIFT_MONIT_PASSWORD=`cat ${OPENSHIFT_MONIT_DIR}env/OPENSHIFT_MONIT_PASSWORD`
 
-if [ -z "${MONIT_ALERT_EMAIL}" ]; then
-  client_result ""
-  client_result "Please set the email you want to receive monit alerts:"
-  client_result ""
-  client_result "$ rhc env set MONIT_ALERT_EMAIL=email@address.com -a ${OPENSHIFT_APP_NAME}"
-  client_result "$ rhc cartridge restart monit -a ${OPENSHIFT_APP_NAME}"
-  client_result ""
-else
-  client_result ""
-  client_result "MONIT_ALERT_EMAIL is set to: '${MONIT_ALERT_EMAIL}'."
-  client_result ""
-fi
+#if [ -z "${MONIT_ALERT_EMAIL}" ]; then
+#  client_result ""
+#  client_result "Please set the email you want to receive monit alerts:"
+#  client_result ""
+#  client_result "$ rhc env set MONIT_ALERT_EMAIL=email@address.com -a ${OPENSHIFT_APP_NAME}"
+#  client_result "$ rhc cartridge restart monit -a ${OPENSHIFT_APP_NAME}"
+#  client_result ""
+#else
+#  client_result ""
+#  client_result "MONIT_ALERT_EMAIL is set to: '${MONIT_ALERT_EMAIL}'."
+#  client_result ""
+#fi
 
 client_result "Monit Server Manager is running at: https://${OPENSHIFT_APP_DNS}/monit-status"
 client_result "Username: admin"

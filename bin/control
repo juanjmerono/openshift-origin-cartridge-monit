@@ -15,12 +15,12 @@ function dump_environment() {
 }
 
 function start() {
-  if [ -z "${MONIT_ALERT_EMAIL}" ]; then
-    echo "ERROR: You need to set the MONIT_ALERT_EMAIL before starting monit."
-    echo "       rhc env set MONIT_ALERT_EMAIL=your@email.com"
-    echo "       rhc cartridge restart monit -a ${OPENSHIFT_APP_NAME}"
-    echo
-  else
+  #if [ -z "${MONIT_ALERT_EMAIL}" ]; then
+  #  echo "ERROR: You need to set the MONIT_ALERT_EMAIL before starting monit."
+  #  echo "       rhc env set MONIT_ALERT_EMAIL=your@email.com"
+  #  echo "       rhc cartridge restart monit -a ${OPENSHIFT_APP_NAME}"
+  #  echo
+  #else
     echo "Starting monit cartridge"
     if [ ! -f ${OPENSHIFT_MONITRC} ]; then
       echo "ERROR: Unabled to locate ~/.monitrc file."
@@ -30,7 +30,7 @@ function start() {
                       # to monit start/stop scripts
     update_monitrc
     ${OPENSHIFT_MONIT_DIR}bin/monit -c ${OPENSHIFT_MONITRC}
-  fi
+  #fi
 }
 
 function stop() {
@@ -59,6 +59,14 @@ function tidy() {
   echo "ENothing to clean for monit."
 }
 
+function slack() {
+  if [ -z "${OPENSHIFT_MONIT_SLACK_WEBHOOK}" ]; then
+  	echo "No slack webhook defined."
+  else
+	curl -X POST --data-urlencode 'payload={"channel": "#general", "username": "monit", "text": "$2", "icon_emoji": ":warning:"}' https://hooks.slack.com/services/${OPENSHIFT_MONIT_SLACK_WEBHOOK}
+  fi
+}
+
 case "$1" in
   start) start ;;
   stop) stop ;;
@@ -66,6 +74,7 @@ case "$1" in
   status) status ;;
   reload) reload ;;
   tidy) tidy ;;
+  slack) slack ;;
   *) exit 0
 esac
 
