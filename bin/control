@@ -56,15 +56,32 @@ function reload() {
 }
 
 function tidy() {
-  echo "ENothing to clean for monit."
+  echo "Nothing to clean for monit."
 }
 
 function slack() {
   if [ -z "${OPENSHIFT_MONIT_SLACK_WEBHOOK}" ]; then
   	echo "No slack webhook defined."
   else
-	curl -X POST --data-urlencode 'payload={"channel": "#general", "username": "monit", "text": "$2", "icon_emoji": ":warning:"}' https://hooks.slack.com/services/${OPENSHIFT_MONIT_SLACK_WEBHOOK}
+	case "$2" in
+	  memory) memory ;;
+	  quota) quota ;;
+	  down) down ;;
+	  *) exit 0
+	esac
   fi
+}
+
+function memory() {
+	curl -X POST --data-urlencode 'payload={"channel": "#general", "username": "monit", "text": "High level of memory usage.", "icon_emoji": ":warning:"}' https://hooks.slack.com/services/${OPENSHIFT_MONIT_SLACK_WEBHOOK}	
+}
+
+function quota() {
+	curl -X POST --data-urlencode 'payload={"channel": "#general", "username": "monit", "text": "High level of disk usage.", "icon_emoji": ":warning:"}' https://hooks.slack.com/services/${OPENSHIFT_MONIT_SLACK_WEBHOOK}	
+}
+
+function down() {
+	curl -X POST --data-urlencode 'payload={"channel": "#general", "username": "monit", "text": "Service down.", "icon_emoji": ":warning:"}' https://hooks.slack.com/services/${OPENSHIFT_MONIT_SLACK_WEBHOOK}	
 }
 
 case "$1" in
