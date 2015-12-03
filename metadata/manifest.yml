@@ -20,11 +20,7 @@ Provides:
 - monit
 Scaling:
   Min: 1
-  Max: 1
-Group-Overrides:
-- components:
-  - monit-5.15
-  - web_framework
+  Max: -1
 Endpoints:
 - Private-IP-Name: HTTP_IP
   Private-Port-Name: WEB_PORT
