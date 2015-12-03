@@ -18,10 +18,12 @@ Website: http://collectd.org
 Provides:
 - monit-5.15
 - monit
-Scaling:
-  Min: 1
-  Max: 1
-  Multiplier: -1
+Components:
+  monit:
+    Scaling:
+      Min: 1
+      Max: 1
+      Multiplier: -1
 Group-Overrides:
 - components:
   - web_framework
